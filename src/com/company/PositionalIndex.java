@@ -1,8 +1,10 @@
 package com.company;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.StringTokenizer;
 
 /**
  * ISTE-612-2215 Lab #2
@@ -11,6 +13,8 @@ import java.util.HashSet;
  */
 
 public class PositionalIndex {
+
+    HashSet<String> stopwordsList;
     String[] myDocs;
     ArrayList<String> termDictionary;
     HashMap<String, ArrayList<Doc>> docLists;
@@ -20,8 +24,9 @@ public class PositionalIndex {
      * @param docs List of input strings or file names
      *
      */
-    public PositionalIndex(String[] docs) {
+    public PositionalIndex(String[] docs,File stopwordsFile) {
 
+        stopwordsList = stopListCreater(stopwordsFile);
         myDocs = docs;
         termDictionary = new ArrayList<String>();
         docLists = new HashMap<>();
@@ -29,7 +34,39 @@ public class PositionalIndex {
 
         for(int i = 0; i < myDocs.length; i++){
 
-            String[] tokens = myDocs[i].split(" ");
+//            String[] tokens = myDocs[i].split(" ");
+
+            // ********* Tokenizing *********
+            ArrayList<String> tokenList = tokenizer(myDocs[i]);
+            // ********* Tokenizing *********
+
+
+            // ********* Removing stop words *********
+            for (int j = 0; j < tokenList.size(); j++) if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
+            // ********* Removing stop words *********
+
+
+
+            // ********* Porter's Stemmer *********
+            ArrayList<String> tokensAfterStemmed = PortersStemmer(tokenList);
+
+            // Removing nulls
+            while (tokensAfterStemmed.remove(null)) {
+            }
+            // ********* Porter's Stemmer *********
+
+
+            System.out.println("^^^^^^^^^^^^^^^");
+            System.out.println(tokensAfterStemmed);
+            System.out.println(">>>>>>>>>>>>>>>>>");
+
+            // ********* Conversion ArrayList to Array *********
+            String tokens[] = tokensAfterStemmed.toArray(new String[tokensAfterStemmed.size()]);
+            // ********* Conversion ArrayList to Array *********
+
+
+
+
             for(int j = 0; j < tokens.length; j++){
 
                 if(termDictionary.contains(tokens[j])){
@@ -77,6 +114,57 @@ public class PositionalIndex {
         return matrixString;
     }
 
+
+
+    /** Adopts the Porter Stemmer
+     * @param tokenList Strings of the single document
+     */
+    public ArrayList<String> PortersStemmer(ArrayList<String> tokenList) {
+        Stemmer stemmer = new Stemmer();
+        ArrayList<String> tokensAfterStemmed = new ArrayList<>();
+        for (String token : tokenList) {
+            char[] charArray = token.toCharArray();
+            stemmer.add(charArray, token.length());
+            stemmer.stem();
+            String temp = stemmer.toString();
+            tokensAfterStemmed.add(temp);
+        }
+        return tokensAfterStemmed;
+    }
+    /** Gets the strings that has been through porter's stemmer.
+     * @return A string representing the employee’s last name.
+     */
+
+
+    /** Tokenizes the single document into array of tokenization
+     * @param doc file that contains stop words
+     */
+    public static ArrayList<String> tokenizer(String doc) {
+        StringTokenizer st1 = new StringTokenizer(doc, " ,.:;?![]()'%$#!/+-*\"\'");
+        ArrayList<String> tokens = new ArrayList<>();
+        while (st1.hasMoreTokens()) tokens.add(st1.nextToken());
+        return tokens;
+    }
+
+    /** Creates a list that the stop words
+     * @param stopwordsFile file that contains stop words
+     */
+    public HashSet<String> stopListCreater(File stopwordsFile) {
+        HashSet<String> stopList = new HashSet<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(stopwordsFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                stopList.add(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stopList;
+    }
+
+
     /**
      * Check two postings list that has same doc ID to find the adjacent location
      * @param post1 first postings
@@ -115,11 +203,29 @@ public class PositionalIndex {
 
     /**
      * Get phrase query result
-     * @param query a phrase query that consists of any number of terms in the sequential order
+     * @param queryParam a phrase query that consists of any number of terms in the sequential order
      * @return docIds of documents that contain the phrase
      */
-    public ArrayList<Doc> phraseQuery(String[] query)
+    public ArrayList<Doc> phraseQuery(String[] queryParam)
     {
+
+        ArrayList<String> queryUpdated = new ArrayList<>();
+        for(int i = 0 ; i < queryParam.length; i++){
+            queryUpdated.add(queryParam[i]);
+        }
+
+        ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
+        String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
+
+
+        System.out.println("Cehck point*********************");
+        for(String t : query){
+            System.out.println(t);
+
+        }
+
+
+
         //TASK3: TO BE COMPLETED
         ArrayList<Doc> queryResult = new ArrayList<>();
         if(query.length < 2) {
@@ -150,25 +256,39 @@ public class PositionalIndex {
                 "nlp after text mining",
                 "nlp after text classification"};
 
-        PositionalIndex pi = new PositionalIndex(docs);
+        File directoryPath = new File("./././Lab1_Data");
+        File stopwordsPath = new File("./././stopwords");
+
+        //List of all files and directories
+        File filesList[] = directoryPath.listFiles();
+
+        // Stop List Process
+        File stopFilesList[] = stopwordsPath.listFiles();
+
+
+
+        PositionalIndex pi = new PositionalIndex(docs, stopFilesList[0]);
+
+
 
         //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
         System.out.println("\n------------------ Test 1 ------------------");
         String SearchTerm = "text mining";
         String[] search = SearchTerm.split(" ");
         ArrayList<Doc> queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
+
+                System.out.println("Search Term: " + SearchTerm);
         for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
         System.out.println("Search Result(ArrayList format): " + queryResult);
 
-
-        System.out.println("\n------------------ Test 2 ------------------");
-        SearchTerm = "big data";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
+//
+//        System.out.println("\n------------------ Test 2 ------------------");
+//        SearchTerm = "big data";
+//        search = SearchTerm.split(" ");
+//        queryResult = pi.phraseQuery(search);
+//        System.out.println("Search Term: " + SearchTerm);
+//        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
+//        System.out.println("Search Result(ArrayList format): " + queryResult);
 
 
         System.out.println("\n------------------ Test 3 ------------------");
