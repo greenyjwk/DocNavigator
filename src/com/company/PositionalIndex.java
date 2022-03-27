@@ -7,34 +7,45 @@ import java.util.HashSet;
 import java.util.StringTokenizer;
 
 /**
- * ISTE-612-2215 Lab #2
- * Ji Woong Kim
- * March 4 2022
+ * ISTE-612-Group Project
+ * March 27 2022
  */
 
 public class PositionalIndex {
     HashSet<String> stopwordsList;
-    String[] myDocs;
     ArrayList<String> termDictionary;
     HashMap<String, ArrayList<Doc>> docLists;
 
     /**
      * Construct a positional index
-     * @param fileListParam List of input strings or file names
-     * @param stopwordsFile List of stopwords strings
+     * @param path List of input strings or file names
      *
      */
-    public PositionalIndex(File[] fileListParam, File stopwordsFile) {
-        stopwordsList = stopListCreater(stopwordsFile);
+//    public PositionalIndex(String path, File stopwordsFile) {
+        public PositionalIndex(String path) {
+
+        File directoryPath = new File(path);
+
+
+        //List of all files and directories
+        File filesList[] = directoryPath.listFiles();
+
+        File stopwordsPath = new File("./././stopwords");
+
+        // Stop List Process
+        File stopFilesList[] = stopwordsPath.listFiles();
+
+
+            stopwordsList = stopListCreater(stopFilesList[0]);
         termDictionary = new ArrayList<String>();
         docLists = new HashMap<>();
         ArrayList<Doc> docList;
 
-        for(int i = 0; i < fileListParam.length; i++){
+        for(int i = 0; i < filesList.length; i++){
 
             // ********* Read single file *********
             String singleDoc = new String();
-            try (BufferedReader br = new BufferedReader(new FileReader(fileListParam[i]))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(filesList[i]))) {
                 String line;
                 while ((line = br.readLine()) != null) singleDoc += line;
             } catch (IOException e) {
@@ -227,17 +238,19 @@ public class PositionalIndex {
 
     public static void main(String[] args) {
 
-        File directoryPath = new File("./././DocFolder");
+//        File directoryPath = new File("./././DocFolder");
+
+        String path = "./././DocFolder";
         File stopwordsPath = new File("./././stopwords");
 
         //List of all files and directories
-        File filesList[] = directoryPath.listFiles();
+//        File filesList[] = directoryPath.listFiles();
 
         // Stop List Process
         File stopFilesList[] = stopwordsPath.listFiles();
 
         // Create PositionalIndex Object
-        PositionalIndex pi = new PositionalIndex(filesList, stopFilesList[0]);
+        PositionalIndex pi = new PositionalIndex(path);
 
         //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
         System.out.println("\n------------------ Testcase 1 ------------------");
