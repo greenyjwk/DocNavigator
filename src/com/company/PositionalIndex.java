@@ -13,7 +13,6 @@ import java.util.StringTokenizer;
  */
 
 public class PositionalIndex {
-
     HashSet<String> stopwordsList;
     String[] myDocs;
     ArrayList<String> termDictionary;
@@ -26,7 +25,6 @@ public class PositionalIndex {
      *
      */
     public PositionalIndex(File[] fileListParam, File stopwordsFile) {
-
         stopwordsList = stopListCreater(stopwordsFile);
         termDictionary = new ArrayList<String>();
         docLists = new HashMap<>();
@@ -42,38 +40,33 @@ public class PositionalIndex {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            // ********* Read single file *********
 
             // ********* Tokenizing *********
             ArrayList<String> tokenList = tokenizer(singleDoc);
             // ********* Tokenizing *********
 
-
             // ********* Removing stop words *********
             for (int j = 0; j < tokenList.size(); j++) if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
             // ********* Removing stop words *********
-
 
             // ********* Porter's Stemmer *********
             ArrayList<String> tokensAfterStemmed = PortersStemmer(tokenList);
             // ********* Porter's Stemmer *********
 
-
             // Removing nulls
             while (tokensAfterStemmed.remove(null)) {
             }
-            // ********* Porter's Stemmer *********
-
+            // Removing nulls
 
             // ********* Conversion ArrayList to Array *********
             String tokens[] = tokensAfterStemmed.toArray(new String[tokensAfterStemmed.size()]);
             // ********* Conversion ArrayList to Array *********
 
             for(int j = 0; j < tokens.length; j++){
-
                 if(termDictionary.contains(tokens[j])){
                     docList = docLists.get(tokens[j]);
                     boolean check = false;
-
                     for(Doc doc :docList){
                         if(doc.docId == i){
                             doc.insertPosition(j);
@@ -95,7 +88,6 @@ public class PositionalIndex {
         }
     }
 
-
     /**
      * Return string representation of a positional index
      */
@@ -114,7 +106,6 @@ public class PositionalIndex {
         }
         return matrixString;
     }
-
 
 
     /** Adopts the Porter Stemmer
@@ -154,9 +145,7 @@ public class PositionalIndex {
         HashSet<String> stopList = new HashSet<>();
         try (BufferedReader br = new BufferedReader(new FileReader(stopwordsFile))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                stopList.add(line);
-            }
+            while ((line = br.readLine()) != null) stopList.add(line);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -164,7 +153,6 @@ public class PositionalIndex {
         }
         return stopList;
     }
-
 
     /**
      * Check two postings list that has same doc ID to find the adjacent location
@@ -185,7 +173,6 @@ public class PositionalIndex {
                     Doc intersectDoc = new Doc(doc2.docId);
                     for (int i = 0; i < doc1.positionList.size(); i++) {
                         for (int e = 0; e < doc2.positionList.size(); e++) {
-
                             if(doc2.positionList.get(e) - doc1.positionList.get(i) == 1){
                                 if(!check.contains(doc1.docId)){
                                     intersectDoc.insertPosition( doc2.positionList.get(e) );
@@ -207,30 +194,17 @@ public class PositionalIndex {
      * @param queryParam a phrase query that consists of any number of terms in the sequential order
      * @return docIds of documents that contain the phrase
      */
-    public ArrayList<Doc> phraseQuery(String[] queryParam)
-    {
-
+    public ArrayList<Doc> phraseQuery(String[] queryParam) {
         ArrayList<String> queryUpdated = new ArrayList<>();
-        for(int i = 0 ; i < queryParam.length; i++){
-            queryUpdated.add(queryParam[i]);
-        }
+        for(int i = 0 ; i < queryParam.length; i++) queryUpdated.add(queryParam[i]);
 
         ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
         String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
 
-
-        System.out.println("Cehck point*********************");
-        for(String t : query){
-            System.out.println(t);
-
-        }
-
-
-
         //TASK3: TO BE COMPLETED
         ArrayList<Doc> queryResult = new ArrayList<>();
         if(query.length < 2) {
-            System.out.println("Search Keywords Error: Phrase query only affords two keywords search");
+            System.out.println("Search Keywords Error: Phrase query should be at least two keywords search");
             return null;
         }
 
@@ -252,12 +226,6 @@ public class PositionalIndex {
 
 
     public static void main(String[] args) {
-//        String[] docs = {"text warehousing over big data",
-//                "dimension data warehouse over big data",
-//                "nlp after text mining",
-//                "nlp after text classification"};
-
-
 
         File directoryPath = new File("./././DocFolder");
         File stopwordsPath = new File("./././stopwords");
@@ -271,9 +239,8 @@ public class PositionalIndex {
         // Create PositionalIndex Object
         PositionalIndex pi = new PositionalIndex(filesList, stopFilesList[0]);
 
-
         //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
-        System.out.println("\n------------------ Test 1 ------------------");
+        System.out.println("\n------------------ Testcase 1 ------------------");
         String SearchTerm = "opening sequence";
         String[] search = SearchTerm.split(" ");
         ArrayList<Doc> queryResult = pi.phraseQuery(search);
@@ -283,14 +250,13 @@ public class PositionalIndex {
         System.out.println("Search Result(ArrayList format): " + queryResult);
 
 
-        System.out.println("\n------------------ Test 2 ------------------");
+        System.out.println("\n------------------ Testcase 2 ------------------");
         SearchTerm = "apparently assuming";
         search = SearchTerm.split(" ");
         queryResult = pi.phraseQuery(search);
         System.out.println("Search Term: " + SearchTerm);
         for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
         System.out.println("Search Result(ArrayList format): " + queryResult);
-
     }
 }
 
@@ -306,6 +272,7 @@ class Doc{
         docId = did;
         positionList = new ArrayList<Integer>();
     }
+
     public Doc(int did, int position)
     {
         docId = did;
