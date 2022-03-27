@@ -21,23 +21,30 @@ public class PositionalIndex {
 
     /**
      * Construct a positional index
-     * @param docs List of input strings or file names
+     * @param fileListParam List of input strings or file names
+     * @param stopwordsFile List of stopwords strings
      *
      */
-    public PositionalIndex(String[] docs,File stopwordsFile) {
+    public PositionalIndex(File[] fileListParam, File stopwordsFile) {
 
         stopwordsList = stopListCreater(stopwordsFile);
-        myDocs = docs;
         termDictionary = new ArrayList<String>();
         docLists = new HashMap<>();
         ArrayList<Doc> docList;
 
-        for(int i = 0; i < myDocs.length; i++){
+        for(int i = 0; i < fileListParam.length; i++){
 
-//            String[] tokens = myDocs[i].split(" ");
+            // ********* Read single file *********
+            String singleDoc = new String();
+            try (BufferedReader br = new BufferedReader(new FileReader(fileListParam[i]))) {
+                String line;
+                while ((line = br.readLine()) != null) singleDoc += line;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             // ********* Tokenizing *********
-            ArrayList<String> tokenList = tokenizer(myDocs[i]);
+            ArrayList<String> tokenList = tokenizer(singleDoc);
             // ********* Tokenizing *********
 
 
@@ -46,9 +53,10 @@ public class PositionalIndex {
             // ********* Removing stop words *********
 
 
-
             // ********* Porter's Stemmer *********
             ArrayList<String> tokensAfterStemmed = PortersStemmer(tokenList);
+            // ********* Porter's Stemmer *********
+
 
             // Removing nulls
             while (tokensAfterStemmed.remove(null)) {
@@ -56,16 +64,9 @@ public class PositionalIndex {
             // ********* Porter's Stemmer *********
 
 
-            System.out.println("^^^^^^^^^^^^^^^");
-            System.out.println(tokensAfterStemmed);
-            System.out.println(">>>>>>>>>>>>>>>>>");
-
             // ********* Conversion ArrayList to Array *********
             String tokens[] = tokensAfterStemmed.toArray(new String[tokensAfterStemmed.size()]);
             // ********* Conversion ArrayList to Array *********
-
-
-
 
             for(int j = 0; j < tokens.length; j++){
 
@@ -251,12 +252,14 @@ public class PositionalIndex {
 
 
     public static void main(String[] args) {
-        String[] docs = {"text warehousing over big data",
-                "dimension data warehouse over big data",
-                "nlp after text mining",
-                "nlp after text classification"};
+//        String[] docs = {"text warehousing over big data",
+//                "dimension data warehouse over big data",
+//                "nlp after text mining",
+//                "nlp after text classification"};
 
-        File directoryPath = new File("./././Lab1_Data");
+
+
+        File directoryPath = new File("./././DocFolder");
         File stopwordsPath = new File("./././stopwords");
 
         //List of all files and directories
@@ -265,83 +268,29 @@ public class PositionalIndex {
         // Stop List Process
         File stopFilesList[] = stopwordsPath.listFiles();
 
-
-
-        PositionalIndex pi = new PositionalIndex(docs, stopFilesList[0]);
-
+        // Create PositionalIndex Object
+        PositionalIndex pi = new PositionalIndex(filesList, stopFilesList[0]);
 
 
         //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
         System.out.println("\n------------------ Test 1 ------------------");
-        String SearchTerm = "text mining";
+        String SearchTerm = "opening sequence";
         String[] search = SearchTerm.split(" ");
         ArrayList<Doc> queryResult = pi.phraseQuery(search);
 
-                System.out.println("Search Term: " + SearchTerm);
+        System.out.println("Search Term: " + SearchTerm);
         for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
         System.out.println("Search Result(ArrayList format): " + queryResult);
 
-//
-//        System.out.println("\n------------------ Test 2 ------------------");
-//        SearchTerm = "big data";
-//        search = SearchTerm.split(" ");
-//        queryResult = pi.phraseQuery(search);
-//        System.out.println("Search Term: " + SearchTerm);
-//        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-//        System.out.println("Search Result(ArrayList format): " + queryResult);
 
-
-        System.out.println("\n------------------ Test 3 ------------------");
-        SearchTerm = "nlp after";
+        System.out.println("\n------------------ Test 2 ------------------");
+        SearchTerm = "apparently assuming";
         search = SearchTerm.split(" ");
         queryResult = pi.phraseQuery(search);
         System.out.println("Search Term: " + SearchTerm);
         for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
         System.out.println("Search Result(ArrayList format): " + queryResult);
 
-
-        System.out.println("\n------------------ Test 4 ------------------");
-        SearchTerm = "warehouse over";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
-
-
-        System.out.println("\n------------------ Test 5 ------------------");
-        SearchTerm = "over big";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
-
-        System.out.println("\n------------------ Test 6 ------------------");
-        SearchTerm = "data warehouse over";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
-
-
-        System.out.println("\n------------------ Test 7 ------------------");
-        SearchTerm = "nlp after text classification";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
-
-
-        System.out.println("\n------------------ Test 8 ------------------");
-        SearchTerm = "dimension data warehouse over big data";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
     }
 }
 
