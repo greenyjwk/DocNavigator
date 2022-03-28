@@ -37,7 +37,7 @@ public class docsNavigator extends JFrame {
     WindowListener exitListener = null;
     //GUI
 
-    //TextFields
+    //JTextFields
     JTextField location, searchBox;
 
     //TextAreas
