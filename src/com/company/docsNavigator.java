@@ -1,5 +1,4 @@
 package com.company;// Java imports
-import com.company.PositionalIndex;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -29,148 +28,135 @@ import java.io.IOException;
 
 
 // class docsNavigator starts
-public class docsNavigator extends JFrame { 
+public class docsNavigator extends JFrame {
 
-ButtonGroup returnedDocumentsOptions = new ButtonGroup();
+    PositionalIndex pi = null;
 
-WindowListener exitListener = null;
-//GUI
+    ButtonGroup returnedDocumentsOptions = new ButtonGroup();
 
-//TextFields
-JTextField location, searchBox;
+    WindowListener exitListener = null;
+    //GUI
 
-//TextAreas
-JTextArea resultArea;
+    //TextFields
+    JTextField location, searchBox;
 
-//Buttons
-JButton browse, search, view, clear;
+    //TextAreas
+    JTextArea resultArea;
 
-//Panels
-JPanel browsePanel, searchPanel, viewPanel;
+    //Buttons
+    JButton browse, search, view, clear;
 
-//Scrollpane
-JScrollPane scrollPane, resultAreaScrollPane;
+    //Panels
+    JPanel browsePanel, searchPanel, viewPanel;
 
-//Filechooser
+    //Scrollpane
+    JScrollPane scrollPane, resultAreaScrollPane;
 
-JFileChooser fileChooser;
+    //Filechooser
 
-// selected folder
-File selectedFolder;
-PositionalIndex pi ;
-// constructor
-public docsNavigator(){
+    JFileChooser fileChooser;
 
-//GUI settings
-    setSize(900, 750);
-    setLocation(300, 50);
-    setTitle("DocsNavigator");
-    setMinimumSize(new Dimension(900, 750));
-    
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    exitListener = new WindowAdapter() {
+    // selected folder
+    File selectedFolder;
 
-       @Override
-       public void windowClosing(WindowEvent e) {
-          int confirm = JOptionPane.showOptionDialog(
-                null, "Are you sure you want to close the application?",
-                "Exit Confirmation", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, null, null, null);
+    // constructor
+    public docsNavigator(){
 
-          if (confirm == 0) {
+    //GUI settings
+        setSize(900, 750);
+        setLocation(300, 50);
+        setTitle("DocsNavigator");
+        setMinimumSize(new Dimension(900, 750));
 
-             System.exit(0);
-          }
-       }
-    };
-    addWindowListener(exitListener);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        exitListener = new WindowAdapter() {
 
-//GUI layout
-    // main container
-    Container container = getContentPane();
-    container.setLayout(new GridLayout(0, 1));
+           @Override
+           public void windowClosing(WindowEvent e) {
+              int confirm = JOptionPane.showOptionDialog(
+                    null, "Are you sure you want to close the application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+              if (confirm == 0) System.exit(0);
+           }
+        };
+        addWindowListener(exitListener);
 
-    location = new JTextField(50);
-    searchBox = new JTextField(30);
+    //GUI layout
+        // main container
+        Container container = getContentPane();
+        container.setLayout(new GridLayout(0, 1));
 
-    resultArea = new JTextArea(20, 40);
-    JScrollPane resultAreaScrollPane = new JScrollPane(resultArea);
+        location = new JTextField(50);
+        searchBox = new JTextField(30);
 
-    browse = new JButton("Browse");
-    browse.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            String folder = getFolder();
+        resultArea = new JTextArea(20, 40);
+        JScrollPane resultAreaScrollPane = new JScrollPane(resultArea);
 
-            PositionalIndex pi = new PositionalIndex(folder);
-        }
-     });
+        browse = new JButton("Browse");
+        browse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String folder = getFolder();
+                pi = new PositionalIndex(folder);
+            }
+         });
 
     search = new JButton("Search");
-    view.addActionListener(new ActionListener() {
+    search.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             String[] searchTerm = searchBox.getText().split(" ");
-            pi.phraseQuery( searchTerm );
+            pi.phraseQuery(searchTerm);
         }
     });
 
     view = new JButton("View Document");
     view.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            
+
         }
-     });
+    });
 
-    clear = new JButton("Clear");
-    clear.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-           searchBox.setText("");
-           resultArea.setText("");
-        }
-     });
+        clear = new JButton("Clear");
+        clear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               searchBox.setText("");
+               resultArea.setText("");
+            }
+        });
 
-     JScrollPane scrollPane = new JScrollPane(viewPanel,
-     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPane = new JScrollPane(viewPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-    browsePanel = new JPanel();
-    browsePanel.setLayout(new FlowLayout());
-    browsePanel.add(location);
-    browsePanel.add(browse);
+        browsePanel = new JPanel();
+        browsePanel.setLayout(new FlowLayout());
+        browsePanel.add(location);
+        browsePanel.add(browse);
 
+        searchPanel = new JPanel();
+        searchPanel.setLayout(new FlowLayout());
+        searchPanel.add(searchBox);
+        searchPanel.add(search);
+        searchPanel.add(clear);
 
+        viewPanel = new JPanel();
+        viewPanel.setLayout(new FlowLayout());
+        viewPanel.add(resultArea);
+        viewPanel.add(view);
 
+        container.add(browsePanel);
+        container.add(searchPanel);
+        container.add(viewPanel);
 
-
-    searchPanel = new JPanel();
-    searchPanel.setLayout(new FlowLayout());
-    searchPanel.add(searchBox);
-    searchPanel.add(search);
-    searchPanel.add(clear);
-
-    viewPanel = new JPanel();
-    viewPanel.setLayout(new FlowLayout());
-    viewPanel.add(resultArea);
-    viewPanel.add(view);
-
-
-    container.add(browsePanel);
-    container.add(searchPanel);
-    container.add(viewPanel);
-
-
-    setVisible(true);
-
-}//end of constructor
+        setVisible(true);
+    }//end of constructor
 
 
 public String getFolder(){
-
     fileChooser = new JFileChooser();
     fileChooser.setCurrentDirectory(new java.io.File(".")); // start at application current directory
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     int returnVal = fileChooser.showSaveDialog(this);
     if(returnVal == JFileChooser.APPROVE_OPTION) {
-    selectedFolder = fileChooser.getSelectedFile();
-
+        selectedFolder = fileChooser.getSelectedFile();
     }
 
     String current = selectedFolder.getAbsolutePath();
@@ -182,12 +168,8 @@ public String getFolder(){
 
     return finalFolder;
 }
-public static void main(String[] args) {
-    
-    docsNavigator search = new docsNavigator();
-
-
-}// end of main
-
+    public static void main(String[] args) {
+        docsNavigator search = new docsNavigator();
+    }// end of main
 
 }// end of docsNavigator
