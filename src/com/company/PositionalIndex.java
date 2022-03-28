@@ -223,7 +223,6 @@ public class PositionalIndex {
             ArrayList<Doc> posting1 = docLists.get(query[0]);
             ArrayList<Doc> posting2 = docLists.get(query[1]);
             queryResult = intersect(posting1, posting2);
-
         }
 
         for(int i = 1; i < query.length - 1; i++) {
@@ -231,38 +230,13 @@ public class PositionalIndex {
                 ArrayList<Doc> posting1 = queryResult;
                 ArrayList<Doc> posting2 = docLists.get(query[i + 1]);
                 queryResult = intersect(posting1, posting2);
-            } else System.out.println("The words are not searched in the list");
+            } else {
+                if(!termDictionary.contains(query[i])) System.out.println( query[i] + " is not searched in the list");
+                if(!termDictionary.contains(query[i+1])) System.out.println( query[i+1]  + " is not searched in the list");
+            }
         }
         return queryResult;
     }
-
-
-//    public static void main(String[] args) {
-//
-//        String path = "./././DocFolder";
-//
-//        // Create PositionalIndex Object
-//        PositionalIndex pi = new PositionalIndex(path);
-//
-//        //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
-//        System.out.println("\n------------------ Testcase 1 ------------------");
-//        String SearchTerm = "opening sequence";
-//        String[] search = SearchTerm.split(" ");
-//        ArrayList<Doc> queryResult = pi.phraseQuery(search);
-//
-//        System.out.println("Search Term: " + SearchTerm);
-//        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-//        System.out.println("Search Result(ArrayList format): " + queryResult);
-//
-//
-//        System.out.println("\n------------------ Testcase 2 ------------------");
-//        SearchTerm = "apparently assuming";
-//        search = SearchTerm.split(" ");
-//        queryResult = pi.phraseQuery(search);
-//        System.out.println("Search Term: " + SearchTerm);
-//        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-//        System.out.println("Search Result(ArrayList format): " + queryResult);
-//    }
 }
 
 /**
