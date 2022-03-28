@@ -30,7 +30,7 @@ import java.io.IOException;
 // class docsNavigator starts
 public class docsNavigator extends JFrame {
 
-    PositionalIndex pi = null;
+    PositionalIndex pi;
 
     ButtonGroup returnedDocumentsOptions = new ButtonGroup();
 
@@ -105,7 +105,14 @@ public class docsNavigator extends JFrame {
     search.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             String[] searchTerm = searchBox.getText().split(" ");
-            pi.phraseQuery(searchTerm);
+            ArrayList<Doc> results = pi.phraseQuery(searchTerm);
+
+            //  For test
+            System.out.println("\nDoc ID search Result");
+            for( Doc doc : results) System.out.println(doc.docId);
+            System.out.println("\n\n");
+            //  For test
+
         }
     });
 

@@ -36,7 +36,7 @@ public class PositionalIndex {
         File stopFilesList[] = stopwordsPath.listFiles();
 
 
-            stopwordsList = stopListCreater(stopFilesList[0]);
+        stopwordsList = stopListCreater(stopFilesList[0]);
         termDictionary = new ArrayList<String>();
         docLists = new HashMap<>();
         ArrayList<Doc> docList;
@@ -223,6 +223,7 @@ public class PositionalIndex {
             ArrayList<Doc> posting1 = docLists.get(query[0]);
             ArrayList<Doc> posting2 = docLists.get(query[1]);
             queryResult = intersect(posting1, posting2);
+
         }
 
         for(int i = 1; i < query.length - 1; i++) {
@@ -236,41 +237,32 @@ public class PositionalIndex {
     }
 
 
-    public static void main(String[] args) {
-
-//        File directoryPath = new File("./././DocFolder");
-
-        String path = "./././DocFolder";
-        File stopwordsPath = new File("./././stopwords");
-
-        //List of all files and directories
-//        File filesList[] = directoryPath.listFiles();
-
-        // Stop List Process
-        File stopFilesList[] = stopwordsPath.listFiles();
-
-        // Create PositionalIndex Object
-        PositionalIndex pi = new PositionalIndex(path);
-
-        //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
-        System.out.println("\n------------------ Testcase 1 ------------------");
-        String SearchTerm = "opening sequence";
-        String[] search = SearchTerm.split(" ");
-        ArrayList<Doc> queryResult = pi.phraseQuery(search);
-
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
-
-
-        System.out.println("\n------------------ Testcase 2 ------------------");
-        SearchTerm = "apparently assuming";
-        search = SearchTerm.split(" ");
-        queryResult = pi.phraseQuery(search);
-        System.out.println("Search Term: " + SearchTerm);
-        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
-        System.out.println("Search Result(ArrayList format): " + queryResult);
-    }
+//    public static void main(String[] args) {
+//
+//        String path = "./././DocFolder";
+//
+//        // Create PositionalIndex Object
+//        PositionalIndex pi = new PositionalIndex(path);
+//
+//        //TASK4: TO BE COMPLETED: design and test phrase queries with 2-5 terms
+//        System.out.println("\n------------------ Testcase 1 ------------------");
+//        String SearchTerm = "opening sequence";
+//        String[] search = SearchTerm.split(" ");
+//        ArrayList<Doc> queryResult = pi.phraseQuery(search);
+//
+//        System.out.println("Search Term: " + SearchTerm);
+//        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
+//        System.out.println("Search Result(ArrayList format): " + queryResult);
+//
+//
+//        System.out.println("\n------------------ Testcase 2 ------------------");
+//        SearchTerm = "apparently assuming";
+//        search = SearchTerm.split(" ");
+//        queryResult = pi.phraseQuery(search);
+//        System.out.println("Search Term: " + SearchTerm);
+//        for(Doc doc:queryResult) System.out.println("Search Result(Document ID) : " + doc.docId);
+//        System.out.println("Search Result(ArrayList format): " + queryResult);
+//    }
 }
 
 /**
