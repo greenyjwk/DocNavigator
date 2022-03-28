@@ -31,7 +31,7 @@ import java.io.IOException;
 public class docsNavigator extends JFrame {
 
     PositionalIndex pi;
-
+    ArrayList<Doc> searchResults;
     ButtonGroup returnedDocumentsOptions = new ButtonGroup();
 
     WindowListener exitListener = null;
@@ -105,21 +105,22 @@ public class docsNavigator extends JFrame {
     search.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             String[] searchTerm = searchBox.getText().split(" ");
-            ArrayList<Doc> results = pi.phraseQuery(searchTerm);
+            searchResults = pi.phraseQuery(searchTerm);
 
             //  For test
             System.out.println("\nDoc ID search Result");
-            for( Doc doc : results) System.out.println(doc.docId);
-            System.out.println("\n\n");
+            for( Doc doc : searchResults) System.out.println(doc.docId);
             //  For test
 
+            //  Reset the search result for the next search
+            searchResults = new ArrayList<>();
         }
     });
 
     view = new JButton("View Document");
     view.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-
+            System.out.println(searchResults);
         }
     });
 
