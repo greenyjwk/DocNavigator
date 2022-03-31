@@ -2,6 +2,10 @@
 package com.company;
 
 import java.awt.Container;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -32,7 +36,9 @@ public class docsNavigator extends JFrame {
 
     PositionalIndex pi;
     ArrayList<Doc> searchResults;
+    ArrayList<String> retrievedDocuments = new ArrayList<String>();
     ButtonGroup returnedDocumentsOptions = new ButtonGroup();
+    File fileToView = new File("test");
 
     WindowListener exitListener = null;
     // GUI
@@ -47,7 +53,7 @@ public class docsNavigator extends JFrame {
     JButton browse, search, view, clear;
 
     // Panels
-    JPanel browsePanel, searchPanel, viewPanel;
+    JPanel browsePanel, searchPanel, viewPanel, retrievedDocumentsPanel;
 
     // Scrollpane
     JScrollPane scrollPane, resultAreaScrollPane;
@@ -59,14 +65,18 @@ public class docsNavigator extends JFrame {
     // selected folder
     File selectedFolder;
 
+    private boolean validate = false;
+    private boolean revalidate = true;
+    private boolean repaint = true;
+
     // constructor
     public docsNavigator() {
 
         // GUI settings
-        setSize(750, 280);
-        setLocation(300, 50);
+        setSize(750, 300);
+        setLocation(300, 400);
         setTitle("DocsNavigator");
-        setMinimumSize(new Dimension(750, 280));
+        setMinimumSize(new Dimension(750, 300));
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         exitListener = new WindowAdapter() {
@@ -91,40 +101,125 @@ public class docsNavigator extends JFrame {
         location = new JTextField(50);
         searchBox = new JTextField(30);
 
-        resultArea = new JTextArea(10, 40);
-        JScrollPane resultAreaScrollPane = new JScrollPane(resultArea);
+        retrievedDocumentsPanel = new JPanel();
+        retrievedDocumentsPanel.setLayout(new GridLayout(0, 1));
+
+        scrollPane = new JScrollPane(retrievedDocumentsPanel,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         browse = new JButton("Browse");
         browse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String folder = getFolder();
-                pi = new PositionalIndex(folder);
-                String folderBoxText = "Your selected directory is: " + folder;
-                location.setText(folderBoxText);
+                try {
+
+                    String folder = getFolder();
+                    pi = new PositionalIndex(folder);
+                    String folderBoxText = "Your selected directory is: " + folder;
+                    location.setText(folderBoxText);
+
+                } catch (Exception eb) {
+                    eb.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Something went wrong! Please try again");
+                }
+
+                JOptionPane.showMessageDialog(null, "Positional Index successfully created");
+
             }
         });
 
         search = new JButton("Search");
         search.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                retrievedDocumentsPanel.removeAll();
+                retrievedDocumentsPanel.repaint();
+                retrievedDocumentsPanel.revalidate();
                 String[] searchTerm = searchBox.getText().split(" ");
                 searchResults = pi.phraseQuery(searchTerm);
-
+                int counter = 0;
                 // For test
-                System.out.println("\nDoc ID search Result");
-                for (Doc doc : searchResults)
+                // System.out.println("\nDoc ID search Result");
+                for (Doc doc : searchResults) {
                     System.out.println(doc.docId);
-                // For test
+                    int id = doc.docId;
+                    // String result = "" + id;
+                    retrievedDocuments.add(pi.fileNames.get(id));
+                    // retrievedDocuments.add(result);
+                    counter++;
+                }
+
+                for (int j = 0; j < counter; j++) {
+                    JRadioButton radio = new JRadioButton(retrievedDocuments.get(j));
+                    radio.setActionCommand(retrievedDocuments.get(j));
+                    returnedDocumentsOptions.add(radio);
+                    retrievedDocumentsPanel.add(radio);
+                }
+
+                if (validate) {
+                    retrievedDocumentsPanel.validate();
+                }
+                if (revalidate) {
+                    retrievedDocumentsPanel.revalidate();
+                }
+                if (repaint) {
+                    retrievedDocumentsPanel.repaint();
+                }
+
+                if (retrievedDocuments.size() == 0){
+
+                    JOptionPane.showMessageDialog(null, "No documents were found. Please try another query");
+                }
 
                 // Reset the search result for the next search
-                searchResults = new ArrayList<>();
+                searchResults = new ArrayList<Doc>();
+                retrievedDocuments = new ArrayList<String>();
+
+
+
             }
+
         });
 
         view = new JButton("View Document");
         view.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(searchResults);
+
+                try{
+                    String folder = getFolder();
+                    String fileLocation = folder + "/" + returnedDocumentsOptions.getSelection().getActionCommand();
+                    //File f = new File(fileLocation);
+                    //fileToView = new File(fileLocation);
+
+                    JFileChooser fc = new JFileChooser();
+                    fc.setVisible(false);
+                    Path path = Paths.get(fileLocation);
+                    File file = path.toFile();
+                    //fc.setSelectedFile(file);
+                    
+                   // if (f.exists()) 
+                    {
+                        if (Desktop.isDesktopSupported()) 
+                        {
+                        Desktop.getDesktop().open(file);
+                        } 
+             
+                        else
+                        {
+                        System.out.println("File does not exists!");
+                        }
+         
+                    }
+                }
+                catch(Exception ert)
+
+                
+                {
+
+                    ert.printStackTrace();
+                }
+
+
+
+
             }
         });
 
@@ -132,12 +227,15 @@ public class docsNavigator extends JFrame {
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 searchBox.setText("");
-                resultArea.setText("");
+                retrievedDocumentsPanel.removeAll();
+                retrievedDocumentsPanel.repaint();
+                retrievedDocumentsPanel.revalidate();
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(viewPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        // JScrollPane scrollPane = new JScrollPane(viewPanel,
+        // ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         // browsePanel = new JPanel();
         // browsePanel.setLayout(new FlowLayout());
@@ -150,18 +248,20 @@ public class docsNavigator extends JFrame {
         searchPanel.add(browse);
         searchPanel.add(searchBox);
         searchPanel.add(search);
-        searchPanel.add(clear);
-        searchPanel.add(resultArea);
         searchPanel.add(view);
+        searchPanel.add(clear);
+        // searchPanel.add(resultArea);
+        // retrievedDocumentsPanel.add(view);
 
         // viewPanel = new JPanel();
         // viewPanel.setLayout(new FlowLayout());
         // viewPanel.add(resultArea);
         // viewPanel.add(view);
 
-      //  container.add(browsePanel);
+        // container.add(browsePanel);
         container.add(searchPanel);
-        //container.add(viewPanel);
+        container.add(retrievedDocumentsPanel);
+        // container.add(viewPanel);
 
         setVisible(true);
         setResizable(false);

@@ -15,7 +15,8 @@ public class PositionalIndex {
     HashSet<String> stopwordsList;
     ArrayList<String> termDictionary;
     HashMap<String, ArrayList<Doc>> docLists;
-
+    File filesList[];
+    HashMap<Integer,String> fileNames;
     /**
      * Construct a positional index
      * @param path List of input strings or file names
@@ -26,15 +27,15 @@ public class PositionalIndex {
 
         File directoryPath = new File(path);
 
-
         //List of all files and directories
-        File filesList[] = directoryPath.listFiles();
+        filesList = directoryPath.listFiles();
 
         File stopwordsPath = new File("./././stopwords");
 
         // Stop List Process
         File stopFilesList[] = stopwordsPath.listFiles();
-
+        
+        fileNames = new HashMap<Integer,String>();
 
         stopwordsList = stopListCreater(stopFilesList[0]);
         termDictionary = new ArrayList<String>();
@@ -96,6 +97,10 @@ public class PositionalIndex {
                     docLists.put( tokens[j] ,docIdList);
                 }
             }
+
+
+           
+            fileNames.put(i, filesList[i].getName());
         }
     }
 
@@ -244,7 +249,7 @@ public class PositionalIndex {
  * Document class that contains the document id and the position list
  */
 class Doc{
-    int docId;
+    public int docId;
     ArrayList<Integer> positionList;
     public Doc(int did)
     {
@@ -262,6 +267,13 @@ class Doc{
     public void insertPosition(int position)
     {
         positionList.add(new Integer(position));
+    }
+
+    public int getID(){
+
+
+        return this.docId;
+
     }
 
     public String toString()
