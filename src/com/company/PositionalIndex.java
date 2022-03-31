@@ -173,7 +173,7 @@ public class PositionalIndex {
      */
     public ArrayList<Doc> intersect(ArrayList<Doc> post1, ArrayList<Doc> post2) {
         ArrayList<Doc> intersectList = new ArrayList<>();
-        //TASK2: TO BE COMPLETED
+        
         HashSet<Integer> check = new HashSet<>();
         for (int q = 0 ;  q < post1.size() ; q++){
             for(int w = 0 ;  w < post2.size(); w++){
@@ -212,7 +212,7 @@ public class PositionalIndex {
         ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
         String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
 
-        //TASK3: TO BE COMPLETED
+   
         ArrayList<Doc> queryResult = new ArrayList<>();
         if(query.length < 2) {
             System.out.println("Search Keywords Error: Phrase query should be at least two keywords search");
