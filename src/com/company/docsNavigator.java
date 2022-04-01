@@ -243,4 +243,4 @@ public class docsNavigator extends JFrame {
         docsNavigator search = new docsNavigator();
     }// end of main
 
-}// end of docsNavigator
+}// end - docsNavigator
