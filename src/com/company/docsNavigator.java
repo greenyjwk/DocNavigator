@@ -247,13 +247,13 @@ public class docsNavigator extends JFrame {
         setResizable(false);
     }// end of constructor
 
-    public String getFolder(boolean check) {
+    public String getFolder(boolean showDialogValid) {
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new java.io.File(".")); // start at application current directory
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         int returnVal;
-        if(check) returnVal = fileChooser.showSaveDialog(this);
+        if(showDialogValid) returnVal = fileChooser.showSaveDialog(this);
         else returnVal = 1;
 
         if (returnVal == JFileChooser.APPROVE_OPTION) selectedFolder = fileChooser.getSelectedFile();
