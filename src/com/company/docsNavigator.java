@@ -1,29 +1,15 @@
 package com.company;
 // Java imports
-import java.awt.Container;
+import java.awt.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
 import java.io.File;
 
 // class docsNavigator starts
@@ -109,6 +95,9 @@ public class docsNavigator extends JFrame {
         browse = new JButton("Browse");
         browse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
+
+
                 try {
 
                     String folder = getFolder(true);
@@ -116,12 +105,13 @@ public class docsNavigator extends JFrame {
                     String folderBoxText = "Your selected directory is: " + folder;
                     location.setText(folderBoxText);
 
+                    JOptionPane.showMessageDialog(null, "Positional Index successfully created");
                 } catch (Exception eb) {
-                    eb.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Something went wrong! Please try again");
+                   // eb.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Positional Index not created! Please try selecting your directory again");
                 }
 
-                JOptionPane.showMessageDialog(null, "Positional Index successfully created");
+
             }
         });
 
@@ -131,7 +121,10 @@ public class docsNavigator extends JFrame {
                 retrievedDocumentsPanel.removeAll();
                 retrievedDocumentsPanel.repaint();
                 retrievedDocumentsPanel.revalidate();
-                if(searchBox.getText().equals("") ){
+//                String regex = "\\s+";
+                String query = searchBox.getText();
+                query = query.replaceAll("\\s", "");
+                if(query.equals("")){
                     JOptionPane.showMessageDialog(null, "Please write your query");
                     return;
                 }
@@ -175,32 +168,60 @@ public class docsNavigator extends JFrame {
         view = new JButton("View Document");
         view.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                try{
-                    String folder = getFolder(false);
-                    String fileLocation = folder + "/" + returnedDocumentsOptions.getSelection().getActionCommand();
-                    JFileChooser fc = new JFileChooser();
-                    fc.setVisible(false);
-                    Path path = Paths.get(fileLocation);
-                    File file = path.toFile();
-
-                    {
-                        if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(file);
-                        else System.out.println("File does not exists!");
-                    }
-                } catch(Exception ert) {
-                    ert.printStackTrace();
+                ButtonModel buttonModel = returnedDocumentsOptions.getSelection();
+                boolean status = false;
+                if (buttonModel == null){
+                    status = false;
+                }else{
+                    status = true;
                 }
+
+                if(status == false) {
+
+
+                    JOptionPane.showMessageDialog(null, "Please select a document");
+
+
+                } else {
+
+
+
+                    try{
+                        String folder = getFolder(false);
+                        String fileLocation = folder + "/" + returnedDocumentsOptions.getSelection().getActionCommand();
+                        JFileChooser fc = new JFileChooser();
+                        fc.setVisible(false);
+                        Path path = Paths.get(fileLocation);
+                        File file = path.toFile();
+
+                        {
+                            if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(file);
+                            else System.out.println("File does not exists!");
+                        }
+                    } catch(Exception ert) {
+                        JOptionPane.showMessageDialog(null, "Please select a document");
+                        ert.printStackTrace();
+                    }
+
+
+                }
+
+
             }
         });
+
+
+
 
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                returnedDocumentsOptions.clearSelection();
                 searchBox.setText("");
                 retrievedDocumentsPanel.removeAll();
                 retrievedDocumentsPanel.repaint();
                 retrievedDocumentsPanel.revalidate();
+
             }
         });
 
@@ -234,14 +255,30 @@ public class docsNavigator extends JFrame {
         int returnVal;
         if(showDialogValid) returnVal = fileChooser.showSaveDialog(this);
         else returnVal = 1;
+        String finalFolder = "";
+        String temp = "";
+        try{
+            if (returnVal == JFileChooser.APPROVE_OPTION) selectedFolder = fileChooser.getSelectedFile();
+            String current = selectedFolder.getAbsolutePath();
+            int index = current.lastIndexOf('/');
+            finalFolder = current.substring(0, index);
+            temp = finalFolder;
 
-        if (returnVal == JFileChooser.APPROVE_OPTION) selectedFolder = fileChooser.getSelectedFile();
-        String current = selectedFolder.getAbsolutePath();
-        int index = current.lastIndexOf('/');
-        String finalFolder = current.substring(0, index);
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Error while getting path");
+            //e.printStackTrace();
 
-        return finalFolder;
+        }
+//            if (temp != null){
+//
+//
+//                return temp;
+//            }
+            return temp;
     }
+
+
+
 
     public static void main(String[] args) {
         docsNavigator search = new docsNavigator();

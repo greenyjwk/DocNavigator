@@ -43,6 +43,7 @@ public class PositionalIndex {
 
         for(int i = 0; i < filesList.length; i++){
 
+
             // ********* Read single file *********
             String singleDoc = new String();
             try (BufferedReader br = new BufferedReader(new FileReader(filesList[i]))) {
@@ -215,9 +216,7 @@ public class PositionalIndex {
         ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
         String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
 
-   
         ArrayList<Doc> queryResult = new ArrayList<>();
-
         if(query.length == 1){
             System.out.println("Single Keyword Search Query");
             ArrayList<Doc> posting1 = docLists.get(query[0]);
