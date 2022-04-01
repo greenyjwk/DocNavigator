@@ -17,13 +17,12 @@ public class PositionalIndex {
     HashMap<String, ArrayList<Doc>> docLists;
     File filesList[];
     HashMap<Integer,String> fileNames;
+
     /**
      * Construct a positional index
      * @param path List of input strings or file names
-     *
      */
-//    public PositionalIndex(String path, File stopwordsFile) {
-        public PositionalIndex(String path) {
+    public PositionalIndex(String path) {
 
         File directoryPath = new File(path);
 
@@ -67,8 +66,7 @@ public class PositionalIndex {
             // ********* Porter's Stemmer *********
 
             // Removing nulls
-            while (tokensAfterStemmed.remove(null)) {
-            }
+            while (tokensAfterStemmed.remove(null)) {}
             // Removing nulls
 
             // ********* Conversion ArrayList to Array *********

@@ -69,7 +69,10 @@ public class docsNavigator extends JFrame {
     private boolean revalidate = true;
     private boolean repaint = true;
 
-    // constructor
+
+    /**
+     * Construct a docNavigator
+     */
     public docsNavigator() {
 
         // GUI settings
@@ -191,11 +194,8 @@ public class docsNavigator extends JFrame {
                     
                    // if (f.exists()) 
                     {
-                        if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().open(file);
-                        } else {
-                        System.out.println("File does not exists!");
-                        }
+                        if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(file);
+                        else System.out.println("File does not exists!");
                     }
                 } catch(Exception ert) {
                     ert.printStackTrace();
@@ -247,6 +247,12 @@ public class docsNavigator extends JFrame {
         setResizable(false);
     }// end of constructor
 
+
+    /**
+     * Access to the current directory path to retrieve files
+     * @param showDialogValid valid value that determines to show diaglog
+     * @return path string
+     */
     public String getFolder(boolean showDialogValid) {
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new java.io.File(".")); // start at application current directory
