@@ -219,8 +219,13 @@ public class PositionalIndex {
 
    
         ArrayList<Doc> queryResult = new ArrayList<>();
-        if(query.length < 2) {
-            System.out.println("Search Keywords Error: Phrase query should be at least two keywords search");
+
+        if(query.length == 1){
+            System.out.println("Single Keyword Search Query");
+            ArrayList<Doc> posting1 = docLists.get(query[0]);
+            return posting1;
+        }else if(query.length < 1) {
+            System.out.println("Search Keywords Error: Query term should be at least one single keyword");
             return null;
         }
 
@@ -270,10 +275,7 @@ class Doc{
     }
 
     public int getID(){
-
-
         return this.docId;
-
     }
 
     public String toString()

@@ -165,16 +165,12 @@ public class docsNavigator extends JFrame {
                 }
 
                 if (retrievedDocuments.size() == 0){
-
                     JOptionPane.showMessageDialog(null, "No documents were found. Please try another query");
                 }
 
                 // Reset the search result for the next search
                 searchResults = new ArrayList<Doc>();
                 retrievedDocuments = new ArrayList<String>();
-
-
-
             }
 
         });
@@ -197,29 +193,15 @@ public class docsNavigator extends JFrame {
                     
                    // if (f.exists()) 
                     {
-                        if (Desktop.isDesktopSupported()) 
-                        {
+                        if (Desktop.isDesktopSupported()) {
                         Desktop.getDesktop().open(file);
-                        } 
-             
-                        else
-                        {
+                        } else {
                         System.out.println("File does not exists!");
                         }
-         
                     }
-                }
-                catch(Exception ert)
-
-                
-                {
-
+                } catch(Exception ert) {
                     ert.printStackTrace();
                 }
-
-
-
-
             }
         });
 
