@@ -211,18 +211,18 @@ public class PositionalIndex {
      */
     public ArrayList<Doc> phraseQuery(String[] queryParam) {
         ArrayList<String> queryUpdated = new ArrayList<>();
-        for(int i = 0 ; i < queryParam.length; i++) queryUpdated.add(queryParam[i]);
+        for(int i = 0 ; i < queryParam.length; i++) queryUpdated.add(queryParam[i].toLowerCase());
 
         ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
         String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
 
         ArrayList<Doc> queryResult = new ArrayList<>();
         if(query.length == 1){
-            System.out.println("Single Keyword Search Query");
+            System.out.println("\nSingle Keyword Search Query");
             ArrayList<Doc> posting1 = docLists.get(query[0]);
             return posting1;
         }else if(query.length < 1) {
-            System.out.println("Search Keywords Error: Query term should be at least one single keyword");
+            System.out.println("\nSearch Keywords Error: Query term should be at least one single keyword");
             return null;
         }
 
