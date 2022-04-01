@@ -1,6 +1,5 @@
-// Java imports
 package com.company;
-
+// Java imports
 import java.awt.Container;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,9 +33,8 @@ public class docsNavigator extends JFrame {
     ArrayList<Doc> searchResults;
     ArrayList<String> retrievedDocuments = new ArrayList<String>();
     ButtonGroup returnedDocumentsOptions = new ButtonGroup();
-    File fileToView = new File("test");
-
     WindowListener exitListener = null;
+
     // GUI
 
     // JTextFields
@@ -71,10 +69,10 @@ public class docsNavigator extends JFrame {
     public docsNavigator() {
 
         // GUI settings
-        setSize(750, 300);
-        setLocation(300, 400);
+        setSize(750, 200);
+        setLocation(350, 275);
         setTitle("DocsNavigator");
-        setMinimumSize(new Dimension(750, 300));
+        setMinimumSize(new Dimension(750, 200));
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         exitListener = new WindowAdapter() {
@@ -100,10 +98,13 @@ public class docsNavigator extends JFrame {
         searchBox = new JTextField(30);
 
         retrievedDocumentsPanel = new JPanel();
-        retrievedDocumentsPanel.setLayout(new GridLayout(0, 1));
+        retrievedDocumentsPanel.setLayout(new GridLayout(0, 2));
+        //retrievedDocumentsPanel.setPreferredSize(new Dimension(500, 150));
+        
 
         scrollPane = new JScrollPane(retrievedDocumentsPanel,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 
         browse = new JButton("Browse");
         browse.addActionListener(new ActionListener() {
@@ -208,7 +209,7 @@ public class docsNavigator extends JFrame {
         searchPanel.add(view);
         searchPanel.add(clear);
         container.add(searchPanel);
-        container.add(retrievedDocumentsPanel);
+        container.add(scrollPane);
 
 
         setVisible(true);
