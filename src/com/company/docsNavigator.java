@@ -65,9 +65,8 @@ public class docsNavigator extends JFrame {
     private boolean revalidate = true;
     private boolean repaint = true;
 
-
     /**
-     * Construct a docNavigator
+     * Construct a docNavigator object
      */
     public docsNavigator() {
 
@@ -134,12 +133,10 @@ public class docsNavigator extends JFrame {
                 String[] searchTerm = searchBox.getText().split(" ");
                 searchResults = pi.phraseQuery(searchTerm);
                 int counter = 0;
-
                 for (Doc doc : searchResults) {
-                    System.out.println(doc.docId);
+                    System.out.println("Doc Id is : " + doc.docId);
                     int id = doc.docId;
                     retrievedDocuments.add(pi.fileNames.get(id));
-
                     counter++;
                 }
 
