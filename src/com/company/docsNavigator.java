@@ -131,6 +131,10 @@ public class docsNavigator extends JFrame {
                 retrievedDocumentsPanel.removeAll();
                 retrievedDocumentsPanel.repaint();
                 retrievedDocumentsPanel.revalidate();
+                if(searchBox.getText().equals("") ){
+                    JOptionPane.showMessageDialog(null, "Please write your query");
+                    return;
+                }
                 String[] searchTerm = searchBox.getText().split(" ");
                 searchResults = pi.phraseQuery(searchTerm);
                 int counter = 0;
