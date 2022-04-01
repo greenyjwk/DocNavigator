@@ -2,7 +2,6 @@
 package com.company;
 
 import java.awt.Container;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.awt.Desktop;
@@ -15,12 +14,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -29,7 +26,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import java.io.File;
-import java.io.IOException;
 
 // class docsNavigator starts
 public class docsNavigator extends JFrame {
@@ -135,14 +131,12 @@ public class docsNavigator extends JFrame {
                 String[] searchTerm = searchBox.getText().split(" ");
                 searchResults = pi.phraseQuery(searchTerm);
                 int counter = 0;
-                // For test
-                // System.out.println("\nDoc ID search Result");
+
                 for (Doc doc : searchResults) {
                     System.out.println(doc.docId);
                     int id = doc.docId;
-                    // String result = "" + id;
                     retrievedDocuments.add(pi.fileNames.get(id));
-                    // retrievedDocuments.add(result);
+
                     counter++;
                 }
 
@@ -180,16 +174,11 @@ public class docsNavigator extends JFrame {
                 try{
                     String folder = getFolder(false);
                     String fileLocation = folder + "/" + returnedDocumentsOptions.getSelection().getActionCommand();
-                    //File f = new File(fileLocation);
-                    //fileToView = new File(fileLocation);
-
                     JFileChooser fc = new JFileChooser();
                     fc.setVisible(false);
                     Path path = Paths.get(fileLocation);
                     File file = path.toFile();
-                    //fc.setSelectedFile(file);
-                    
-                   // if (f.exists()) 
+
                     {
                         if (Desktop.isDesktopSupported()) {
                         Desktop.getDesktop().open(file);
@@ -213,15 +202,6 @@ public class docsNavigator extends JFrame {
             }
         });
 
-        // JScrollPane scrollPane = new JScrollPane(viewPanel,
-        // ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        // browsePanel = new JPanel();
-        // browsePanel.setLayout(new FlowLayout());
-        // browsePanel.add(location);
-        // browsePanel.add(browse);
-
         searchPanel = new JPanel();
         searchPanel.setLayout(new FlowLayout());
         searchPanel.add(location);
@@ -230,18 +210,9 @@ public class docsNavigator extends JFrame {
         searchPanel.add(search);
         searchPanel.add(view);
         searchPanel.add(clear);
-        // searchPanel.add(resultArea);
-        // retrievedDocumentsPanel.add(view);
-
-        // viewPanel = new JPanel();
-        // viewPanel.setLayout(new FlowLayout());
-        // viewPanel.add(resultArea);
-        // viewPanel.add(view);
-
-        // container.add(browsePanel);
         container.add(searchPanel);
         container.add(retrievedDocumentsPanel);
-        // container.add(viewPanel);
+
 
         setVisible(true);
         setResizable(false);
