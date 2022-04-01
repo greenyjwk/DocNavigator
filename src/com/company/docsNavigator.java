@@ -112,7 +112,7 @@ public class docsNavigator extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                    String folder = getFolder();
+                    String folder = getFolder(true);
                     pi = new PositionalIndex(folder);
                     String folderBoxText = "Your selected directory is: " + folder;
                     location.setText(folderBoxText);
@@ -123,7 +123,6 @@ public class docsNavigator extends JFrame {
                 }
 
                 JOptionPane.showMessageDialog(null, "Positional Index successfully created");
-
             }
         });
 
@@ -172,7 +171,6 @@ public class docsNavigator extends JFrame {
                 searchResults = new ArrayList<Doc>();
                 retrievedDocuments = new ArrayList<String>();
             }
-
         });
 
         view = new JButton("View Document");
@@ -180,7 +178,7 @@ public class docsNavigator extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 try{
-                    String folder = getFolder();
+                    String folder = getFolder(false);
                     String fileLocation = folder + "/" + returnedDocumentsOptions.getSelection().getActionCommand();
                     //File f = new File(fileLocation);
                     //fileToView = new File(fileLocation);
@@ -249,15 +247,16 @@ public class docsNavigator extends JFrame {
         setResizable(false);
     }// end of constructor
 
-    public String getFolder() {
+    public String getFolder(boolean check) {
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new java.io.File(".")); // start at application current directory
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnVal = fileChooser.showSaveDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            selectedFolder = fileChooser.getSelectedFile();
-        }
 
+        int returnVal;
+        if(check) returnVal = fileChooser.showSaveDialog(this);
+        else returnVal = 1;
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) selectedFolder = fileChooser.getSelectedFile();
         String current = selectedFolder.getAbsolutePath();
         int index = current.lastIndexOf('/');
         String finalFolder = current.substring(0, index);
