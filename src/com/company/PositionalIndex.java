@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.StringTokenizer;
 
 /**
- * ISTE-612-Group Project
- * March 27 2022
+ * ISTE-612-Group1 Project
+ * April 13 2022
  */
 
 public class PositionalIndex {
@@ -96,9 +96,6 @@ public class PositionalIndex {
                     docLists.put( tokens[j] ,docIdList);
                 }
             }
-
-
-           
             fileNames.put(i, filesList[i].getName());
         }
     }
@@ -113,10 +110,7 @@ public class PositionalIndex {
         for(int i=0;i<termDictionary.size();i++){
             matrixString += String.format("%-15s", termDictionary.get(i));
             docList = docLists.get(i);
-            for(int j=0;j<docList.size();j++)
-            {
-                matrixString += docList.get(j)+ "\t";
-            }
+            for(int j=0;j<docList.size();j++) matrixString += docList.get(j)+ "\t";
             matrixString += "\n";
         }
         return matrixString;
@@ -177,13 +171,11 @@ public class PositionalIndex {
      */
     public ArrayList<Doc> intersect(ArrayList<Doc> post1, ArrayList<Doc> post2) {
         ArrayList<Doc> intersectList = new ArrayList<>();
-        
         HashSet<Integer> check = new HashSet<>();
         for (int q = 0 ;  q < post1.size() ; q++){
             for(int w = 0 ;  w < post2.size(); w++){
                 Doc doc1 = post1.get(q);
                 Doc doc2 = post2.get(w);
-
                 if(doc1.docId == doc2.docId){
                     Doc intersectDoc = new Doc(doc2.docId);
                     for (int i = 0; i < doc1.positionList.size(); i++) {
@@ -212,10 +204,8 @@ public class PositionalIndex {
     public ArrayList<Doc> phraseQuery(String[] queryParam) {
         ArrayList<String> queryUpdated = new ArrayList<>();
         for(int i = 0 ; i < queryParam.length; i++) queryUpdated.add(queryParam[i].toLowerCase());
-
         ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
         String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
-
         ArrayList<Doc> queryResult = new ArrayList<>();
         if(query.length == 1){
             System.out.println("\nSingle Keyword Search Query");
