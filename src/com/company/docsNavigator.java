@@ -87,7 +87,15 @@ public class docsNavigator extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String folder = getFolder(true);
+                    
+                    //new code : for calculating time
+                  long startTime = System.currentTimeMillis();
                     pi = new PositionalIndex(folder);
+                     // get the end time
+                    long endTime = System.currentTimeMillis();
+                    System.out.println("Counting takes " +(endTime - startTime) + "ms");
+                    
+                    
                     String folderBoxText = "Your selected directory is: " + folder;
                     location.setText(folderBoxText);
                     JOptionPane.showMessageDialog(null, "Positional Index successfully created");
