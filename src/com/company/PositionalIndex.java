@@ -24,6 +24,7 @@ public class PositionalIndex {
      */
     public PositionalIndex(String path) {
 
+
         File directoryPath = new File(path);
 
         //List of all files and directories
@@ -98,6 +99,8 @@ public class PositionalIndex {
             }
             fileNames.put(i, filesList[i].getName());
         }
+
+
     }
 
     /**
