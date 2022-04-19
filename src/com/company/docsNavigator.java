@@ -97,13 +97,14 @@ public class docsNavigator extends JFrame {
                     long totalTime = (((endTime - startTime)/1000)/60);
                     System.out.println("Time to build Inverted Index in seconds: " + ((endTime - startTime)/1000) + " seconds");
                     System.out.println("Time to build Inverted Index in minutes: " + totalTime + " minutes ");
+                    System.out.println("\n\n");
                     
                     String folderBoxText = "Your selected directory is: " + folder;
                     location.setText(folderBoxText);
-                    JOptionPane.showMessageDialog(null, "Positional Index successfully created");
+                    JOptionPane.showMessageDialog(null, "Inverted Index successfully created");
                 } catch (Exception eb) {
                     // eb.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Positional Index not created! Please try selecting your directory again");
+                    JOptionPane.showMessageDialog(null, "Inverted Index not created! Please try selecting your directory again");
                 }
             }
         });
@@ -129,16 +130,26 @@ public class docsNavigator extends JFrame {
 
                 long searchStartTime = System.currentTimeMillis();
 
-                searchResults = pi.phraseQuery(searchTerm);
+                searchResults = pi.Search(searchTerm);
+
+//                long start = System.nanoTime();
+//                // some time passes
+//                long end = System.nanoTime();
+//                long elapsedTime = end - start;
+
+
+
 
                 long searchEndTime = System.currentTimeMillis();
+                System.out.println("Search start time: " + searchStartTime);
+                System.out.println("Search end time: " + searchEndTime);
                 long searchTotalTime = (((searchEndTime - searchStartTime)/1000)/60);
                 System.out.println("Time to search documents in seconds: " + ((searchEndTime - searchStartTime)/1000) + " seconds");
                 System.out.println("Time to search documents in minutes: " + searchTotalTime + " minutes ");
+                System.out.println("\n\n");
 
                 int counter = 0;
                 for (Doc doc : searchResults) {
-                    System.out.println("Doc Id is : " + doc.docId);
                     int id = doc.docId;
                     retrievedDocuments.add(pi.fileNames.get(id));
                     counter++;

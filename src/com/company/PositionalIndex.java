@@ -1,14 +1,11 @@
 package com.company;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * ISTE-612-Group1 Project
- * April 13 2022
+ * April 20 2022
  */
 
 public class PositionalIndex {
@@ -16,35 +13,40 @@ public class PositionalIndex {
     ArrayList<String> termDictionary;
     HashMap<String, ArrayList<Doc>> docLists;
     File filesList[];
-    HashMap<Integer,String> fileNames;
+    HashMap<Integer, String> fileNames;
+
+    //for inverted Index
+    private HashMap<String, ArrayList<Doc>> termList;
 
     /**
      * Construct a positional index
+     *
      * @param path List of input strings or file names
      */
     public PositionalIndex(String path) {
-
+        this.termList = new HashMap<>();
 
         File directoryPath = new File(path);
 
         //List of all files and directories
         filesList = directoryPath.listFiles();
 
+
+
+
         File stopwordsPath = new File("./././stopwords");
 
         // Stop List Process
         File stopFilesList[] = stopwordsPath.listFiles();
-        
-        fileNames = new HashMap<Integer,String>();
 
-        stopwordsList = stopListCreater(stopFilesList[0]);
-        termDictionary = new ArrayList<String>();
+        fileNames = new HashMap<>();
+//        stopwordsList = stopListCreater(stopFilesList[0]);
+        termDictionary = new ArrayList<>();
         docLists = new HashMap<>();
-        ArrayList<Doc> docList;
 
-        for(int i = 0; i < filesList.length; i++){
-
-
+        for (int i = 0; i < filesList.length; i++) {
+            int docId = i;
+//            System.out.println(filesList[i].getName());
             // ********* Read single file *********
             String singleDoc = new String();
             try (BufferedReader br = new BufferedReader(new FileReader(filesList[i]))) {
@@ -59,68 +61,69 @@ public class PositionalIndex {
             ArrayList<String> tokenList = tokenizer(singleDoc);
             // ********* Tokenizing *********
 
+            // ********* converting lower case *********
+            ArrayList<String> lowercaseList = new ArrayList<>();
+            for (int j = 0; j < tokenList.size(); j++) lowercaseList.add(tokenList.get(j).toLowerCase());
+            // ********* converting lower case *********
+
             // ********* Removing stop words *********
-            for (int j = 0; j < tokenList.size(); j++) if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
+//            for (int j = 0; j < tokenList.size(); j++)
+//                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
             // ********* Removing stop words *********
 
             // ********* Porter's Stemmer *********
-            ArrayList<String> tokensAfterStemmed = PortersStemmer(tokenList);
+            ArrayList<String> tokensAfterStemmed = PortersStemmer(lowercaseList);
             // ********* Porter's Stemmer *********
 
             // Removing nulls
             while (tokensAfterStemmed.remove(null)) {}
             // Removing nulls
 
-            // ********* Conversion ArrayList to Array *********
-            String tokens[] = tokensAfterStemmed.toArray(new String[tokensAfterStemmed.size()]);
-            // ********* Conversion ArrayList to Array *********
-
-            for(int j = 0; j < tokens.length; j++){
-                if(termDictionary.contains(tokens[j])){
-                    docList = docLists.get(tokens[j]);
-                    boolean check = false;
-                    for(Doc doc :docList){
-                        if(doc.docId == i){
-                            doc.insertPosition(j);
-                            check = true;
-                        }
+            //Invereted Index
+            for (int tokenIndex = 0; tokenIndex < tokensAfterStemmed.size(); tokenIndex++) {
+                String word = tokensAfterStemmed.get(tokenIndex);
+                if (!termList.containsKey(word)) {
+                    ArrayList<Doc> docList = new ArrayList<>();
+                    //Adding a docID Number
+                    Doc doc = new Doc(docId);
+                    docList.add(doc);
+                    termList.put(word, docList);
+                } else {
+                    //if the docID is not in list of the docIdList
+                    if (!termList.get(word).contains(docId)) {
+                        ArrayList<Doc> docList2 = termList.get(word);
+                        Doc docTemp = new Doc(docId);
+                        docList2.add(docTemp);
+                        termList.put(word, docList2); // Adding a doc from the list
                     }
-                    if(!check){
-                        Doc doc = new Doc(i, j);
-                        docList.add(doc);
-                    }
-                }else{
-                    termDictionary.add(tokens[j]);
-                    Doc doc = new Doc(i, j);
-                    ArrayList<Doc> docIdList = new ArrayList<>();
-                    docIdList.add(doc);
-                    docLists.put( tokens[j] ,docIdList);
+                }
+                for (Map.Entry<String, ArrayList<Doc>> set : termList.entrySet()) {
+//                    System.out.println(set.getKey() + " = ");
                 }
             }
-            fileNames.put(i, filesList[i].getName());
+            fileNames.put(docId, filesList[docId].getName());
         }
-
-
     }
 
     /**
      * Return string representation of a positional index
      */
-    public String toString()
-    {
+    public String toString() {
         String matrixString = new String();
         ArrayList<Doc> docList;
-        for(int i=0;i<termDictionary.size();i++){
+        for (int i = 0; i < termDictionary.size(); i++) {
             matrixString += String.format("%-15s", termDictionary.get(i));
             docList = docLists.get(i);
-            for(int j=0;j<docList.size();j++) matrixString += docList.get(j)+ "\t";
+            for (int j = 0; j < docList.size(); j++) matrixString += docList.get(j) + "\t";
             matrixString += "\n";
         }
         return matrixString;
     }
 
 
-    /** Adopts the Porter Stemmer
+    /**
+     * Adopts the Porter Stemmer
+     *
      * @param tokenList Strings of the single document
      */
     public ArrayList<String> PortersStemmer(ArrayList<String> tokenList) {
@@ -140,7 +143,9 @@ public class PositionalIndex {
      */
 
 
-    /** Tokenizes the single document into array of tokenization
+    /**
+     * Tokenizes the single document into array of tokenization
+     *
      * @param doc file that contains stop words
      */
     public static ArrayList<String> tokenizer(String doc) {
@@ -150,7 +155,9 @@ public class PositionalIndex {
         return tokens;
     }
 
-    /** Creates a list that the stop words
+    /**
+     * Creates a list that the stop words
+     *
      * @param stopwordsFile file that contains stop words
      */
     public HashSet<String> stopListCreater(File stopwordsFile) {
@@ -166,114 +173,89 @@ public class PositionalIndex {
         return stopList;
     }
 
-    /**
-     * Check two postings list that has same doc ID to find the adjacent location
-     * @param post1 first postings
-     * @param post2 second postings
-     * @return merged result of two postings
-     */
-    public ArrayList<Doc> intersect(ArrayList<Doc> post1, ArrayList<Doc> post2) {
-        ArrayList<Doc> intersectList = new ArrayList<>();
-        HashSet<Integer> check = new HashSet<>();
-        for (int q = 0 ;  q < post1.size() ; q++){
-            for(int w = 0 ;  w < post2.size(); w++){
-                Doc doc1 = post1.get(q);
-                Doc doc2 = post2.get(w);
-                if(doc1.docId == doc2.docId){
-                    Doc intersectDoc = new Doc(doc2.docId);
-                    for (int i = 0; i < doc1.positionList.size(); i++) {
-                        for (int e = 0; e < doc2.positionList.size(); e++) {
-                            if(doc2.positionList.get(e) - doc1.positionList.get(i) == 1){
-                                if(!check.contains(doc1.docId)){
-                                    intersectDoc.insertPosition( doc2.positionList.get(e) );
-                                    check.add(doc2.docId);
-                                }
-                            }
-                        }
-                    }
-                    intersectList.add(intersectDoc);
-                }
-            }
-        }
-        return intersectList;
-    }
-
 
     /**
-     * Get phrase query result
-     * @param queryParam a phrase query that consists of any number of terms in the sequential order
-     * @return docIds of documents that contain the phrase
+     * Multiple keywords search with condition And, print out the document IDs that contain the serach keyword
+     *
+     * @param queryParam Two words that will be searched
      */
-    public ArrayList<Doc> phraseQuery(String[] queryParam) {
+    public ArrayList<Doc> Search(String[] queryParam) {
+
         ArrayList<String> queryUpdated = new ArrayList<>();
-        for(int i = 0 ; i < queryParam.length; i++) queryUpdated.add(queryParam[i].toLowerCase());
+        for (int i = 0; i < queryParam.length; i++) queryUpdated.add(queryParam[i].toLowerCase());
         ArrayList<String> AfterStemmed = PortersStemmer(queryUpdated);
-        String query[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
-        ArrayList<Doc> queryResult = new ArrayList<>();
-        if(query.length == 1){
-            System.out.println("\nSingle Keyword Search Query");
-            ArrayList<Doc> posting1 = docLists.get(query[0]);
-            return posting1;
-        }else if(query.length < 1) {
-            System.out.println("\nSearch Keywords Error: Query term should be at least one single keyword");
-            return null;
-        }
+        String queryKeywords[] = AfterStemmed.toArray(new String[AfterStemmed.size()]);
 
-        if(termDictionary.contains(query[0]) & termDictionary.contains(query[1]) ) {
-            ArrayList<Doc> posting1 = docLists.get(query[0]);
-            ArrayList<Doc> posting2 = docLists.get(query[1]);
-            queryResult = intersect(posting1, posting2);
-        }
-
-        for(int i = 1; i < query.length - 1; i++) {
-            if (termDictionary.contains(query[i]) & termDictionary.contains(query[i + 1])) {
-                ArrayList<Doc> posting1 = queryResult;
-                ArrayList<Doc> posting2 = docLists.get(query[i + 1]);
-                queryResult = intersect(posting1, posting2);
+        HashSet<Integer> set = new HashSet<>();
+        boolean check = true;
+        for (String keyword : queryKeywords) {
+            if (termList.containsKey(keyword)) {
+                if (check) {
+                    check = false;
+                    (termList.get(keyword)).forEach(Doc -> {
+                        set.add(Doc.docId);
+                    });
+                } else {
+                    HashSet<Integer> set2 = new HashSet<>();
+                    (termList.get(keyword)).forEach(Doc -> {
+                        set2.add(Doc.docId);
+                    });
+                    set.retainAll(set2);
+                }
             } else {
-                if(!termDictionary.contains(query[i])) System.out.println( query[i] + " is not searched in the list");
-                if(!termDictionary.contains(query[i+1])) System.out.println( query[i+1]  + " is not searched in the list");
+                System.out.println("Missing keyword\n\n");
+                return new ArrayList<>();
             }
         }
-        return queryResult;
+
+        ArrayList<Doc> searchResult = new ArrayList<>();
+        for(int docId : set) searchResult.add(new Doc(docId));
+
+        //Need to check
+        return searchResult;
     }
 }
 
 /**
- *
  * Document class that contains the document id and the position list
  */
-class Doc{
+class Doc {
     public int docId;
     ArrayList<Integer> positionList;
-    public Doc(int did)
-    {
+
+    public Doc(int did) {
         docId = did;
         positionList = new ArrayList<Integer>();
     }
 
-    public Doc(int did, int position)
-    {
+    public Doc(int did, int position) {
         docId = did;
         positionList = new ArrayList<Integer>();
         positionList.add(new Integer(position));
     }
 
-    public void insertPosition(int position)
-    {
+    public void insertPosition(int position) {
         positionList.add(new Integer(position));
     }
 
-    public int getID(){
+    public int getID() {
         return this.docId;
     }
 
-    public String toString()
-    {
-        String docIdString = ""+docId + ":<";
-        for(Integer pos:positionList)
+    public String toString() {
+        String docIdString = "" + docId + ":<";
+        for (Integer pos : positionList)
             docIdString += pos + ",";
-        docIdString = docIdString.substring(0,docIdString.length()-1) + ">";
+        docIdString = docIdString.substring(0, docIdString.length() - 1) + ">";
         return docIdString;
+    }
+}
+
+class docListComp implements Comparator<ArrayList<Integer>> {
+    @Override
+    public int compare(ArrayList<Integer> e1, ArrayList<Integer> e2) {
+        if (e1.size() < e2.size()) return -1;
+        else if (e1.size() > e2.size()) return 1;
+        else return 0;
     }
 }
