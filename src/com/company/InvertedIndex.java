@@ -15,7 +15,7 @@ public class InvertedIndex {
     HashMap<Integer, String> fileNames;
 
     //for inverted Index
-    private HashMap<String, ArrayList<Doc>> termList;
+    private HashMap<String, HashSet<Doc>> termList;
 
     /**
      * Construct a positional index
@@ -81,27 +81,22 @@ public class InvertedIndex {
             for (int tokenIndex = 0; tokenIndex < tokensAfterStemmed.size(); tokenIndex++) {
                 String word = tokensAfterStemmed.get(tokenIndex);
                 if (!termList.containsKey(word)) {
-                    ArrayList<Doc> docList = new ArrayList<>();
-                    //Adding a docID Number
+                    HashSet<Doc> docSet = new HashSet<>();
                     Doc doc = new Doc(docId);
-                    docList.add(doc);
-                    termList.put(word, docList);
+                    docSet.add(doc);
+                    termList.put(word, docSet);
                 } else {
-                    //if the docID is not in list of the docIdList
-                    if (!termList.get(word).contains(docId)) {
-                        ArrayList<Doc> docList2 = termList.get(word);
-                        Doc docTemp = new Doc(docId);
-                        docList2.add(docTemp);
-                        termList.put(word, docList2); // Adding a doc from the list
-                    }
-                }
-                for (Map.Entry<String, ArrayList<Doc>> set : termList.entrySet()) {
-//                    System.out.println(set.getKey() + " = ");
+                    HashSet<Doc> set = termList.get(word);
+                    Doc docTemp = new Doc(docId);
+                    set.add(docTemp);
+                    termList.put(word, set); // Adding a doc from the list
                 }
             }
             fileNames.put(docId, filesList[docId].getName());
         }
     }
+
+
 
     /**
      * Return string representation of a positional index
