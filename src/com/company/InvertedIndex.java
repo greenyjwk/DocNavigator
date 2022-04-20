@@ -13,6 +13,7 @@ public class InvertedIndex {
     HashMap<String, ArrayList<Doc>> docLists;
     File filesList[];
     HashMap<Integer, String> fileNames;
+    HashSet<String> stopwordsList = new HashSet<>();
 
     //for inverted Index
     private HashMap<String, HashSet<Doc>> termList;
@@ -37,7 +38,7 @@ public class InvertedIndex {
         File stopFilesList[] = stopwordsPath.listFiles();
 
         fileNames = new HashMap<>();
-//        stopwordsList = stopListCreater(stopFilesList[0]);
+        stopwordsList = stopListCreater(stopFilesList[0]);
         termDictionary = new ArrayList<>();
         docLists = new HashMap<>();
 
@@ -58,15 +59,18 @@ public class InvertedIndex {
             ArrayList<String> tokenList = tokenizer(singleDoc);
             // ********* Tokenizing *********
 
+
+            // ********* Removing stop words *********
+            for (int j = 0; j < tokenList.size(); j++)
+                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
+            // ********* Removing stop words *********
+
+
             // ********* converting lower case *********
             ArrayList<String> lowercaseList = new ArrayList<>();
             for (int j = 0; j < tokenList.size(); j++) lowercaseList.add(tokenList.get(j).toLowerCase());
             // ********* converting lower case *********
 
-            // ********* Removing stop words *********
-//            for (int j = 0; j < tokenList.size(); j++)
-//                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
-            // ********* Removing stop words *********
 
             // ********* Porter's Stemmer *********
             ArrayList<String> tokensAfterStemmed = PortersStemmer(lowercaseList);

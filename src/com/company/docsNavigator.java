@@ -40,6 +40,7 @@ public class docsNavigator extends JFrame {
     private boolean validate = false;
     private boolean revalidate = true;
     private boolean repaint = true;
+    float time;
 
     /**
      * Construct a docNavigator object
@@ -89,14 +90,29 @@ public class docsNavigator extends JFrame {
                     String folder = getFolder(true);
 
                     //     //new code : for calculating time
+//                    long startTime = System.currentTimeMillis();
+//                    pi = new InvertedIndex(folder);
+//                    // get the end time
+//                    long endTime = System.currentTimeMillis();
+
+
                     long startTime = System.currentTimeMillis();
                     pi = new InvertedIndex(folder);
                     // get the end time
                     long endTime = System.currentTimeMillis();
+                    time = ((endTime - startTime) / 1000);
+                    double totalTime = (time / 60);
+                    System.out.println(
+                            "\nTime to build Inverted Index in seconds: " + ((endTime - startTime) / 1000)
+                                    + " seconds");
+                    System.out.println("Time to build Inverted Index in minutes: "
+                            + (Math.round(totalTime * 100.0) / 100.0) + " minutes \n");
 
-                    long totalTime = (((endTime - startTime) / 1000) / 60);
-                    System.out.println("Time to build Inverted Index in seconds: " + ((endTime - startTime) / 1000) + " seconds");
-                    System.out.println("Time to build Inverted Index in minutes: " + totalTime + " minutes ");
+
+
+//                    long totalTime = (((endTime - startTime) / 1000) / 60);
+//                    System.out.println("Time to build Inverted Index in seconds: " + ((endTime - startTime) / 1000) + " seconds");
+//                    System.out.println("Time to build Inverted Index in minutes: " + totalTime + " minutes ");
                     System.out.println("\n\n");
 
                     String folderBoxText = "Your selected directory is: " + folder;
@@ -132,6 +148,10 @@ public class docsNavigator extends JFrame {
                 long searchStartTime = System.nanoTime();
                 searchResults = pi.Search(searchTerm);
                 long searchEndTime = System.nanoTime();
+
+
+
+
 
 //                // some time passes
                 System.out.println("Search start time(nano second) : " + searchStartTime);
