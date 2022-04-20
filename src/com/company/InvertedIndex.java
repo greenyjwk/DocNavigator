@@ -13,7 +13,7 @@ public class InvertedIndex {
     HashMap<String, ArrayList<Doc>> docLists;
     File filesList[];
     HashMap<Integer, String> fileNames;
-    HashSet<String> stopwordsList = new HashSet<>();
+    HashSet<String> stopwordsList;
 
     //for inverted Index
     private HashMap<String, HashSet<Doc>> termList;
@@ -61,8 +61,8 @@ public class InvertedIndex {
 
 
             // ********* Removing stop words *********
-            for (int j = 0; j < tokenList.size(); j++)
-                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
+//            for (int j = 0; j < tokenList.size(); j++)
+//                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
             // ********* Removing stop words *********
 
 
@@ -76,12 +76,14 @@ public class InvertedIndex {
             ArrayList<String> tokensAfterStemmed = PortersStemmer(lowercaseList);
             // ********* Porter's Stemmer *********
 
+
             // Removing nulls
             while (tokensAfterStemmed.remove(null)) {
             }
             // Removing nulls
 
-            //Invereted Index
+
+            // Building invereted index
             for (int tokenIndex = 0; tokenIndex < tokensAfterStemmed.size(); tokenIndex++) {
                 String word = tokensAfterStemmed.get(tokenIndex);
                 if (!termList.containsKey(word)) {
@@ -99,7 +101,6 @@ public class InvertedIndex {
             fileNames.put(docId, filesList[docId].getName());
         }
     }
-
 
 
     /**
