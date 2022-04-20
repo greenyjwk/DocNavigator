@@ -8,8 +8,7 @@ import java.util.*;
  * April 20 2022
  */
 
-public class PositionalIndex {
-    HashSet<String> stopwordsList;
+public class InvertedIndex {
     ArrayList<String> termDictionary;
     HashMap<String, ArrayList<Doc>> docLists;
     File filesList[];
@@ -23,15 +22,13 @@ public class PositionalIndex {
      *
      * @param path List of input strings or file names
      */
-    public PositionalIndex(String path) {
+    public InvertedIndex(String path) {
         this.termList = new HashMap<>();
 
         File directoryPath = new File(path);
 
         //List of all files and directories
         filesList = directoryPath.listFiles();
-
-
 
 
         File stopwordsPath = new File("./././stopwords");
@@ -76,7 +73,8 @@ public class PositionalIndex {
             // ********* Porter's Stemmer *********
 
             // Removing nulls
-            while (tokensAfterStemmed.remove(null)) {}
+            while (tokensAfterStemmed.remove(null)) {
+            }
             // Removing nulls
 
             //Invereted Index
@@ -209,7 +207,7 @@ public class PositionalIndex {
         }
 
         ArrayList<Doc> searchResult = new ArrayList<>();
-        for(int docId : set) searchResult.add(new Doc(docId));
+        for (int docId : set) searchResult.add(new Doc(docId));
 
         //Need to check
         return searchResult;

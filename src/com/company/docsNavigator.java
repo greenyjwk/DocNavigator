@@ -15,7 +15,7 @@ import java.io.File;
 // class docsNavigator starts
 @SuppressWarnings("unchecked")
 public class docsNavigator extends JFrame {
-    PositionalIndex pi;
+    InvertedIndex pi;
     ArrayList<Doc> searchResults;
     ArrayList<String> retrievedDocuments = new ArrayList<String>();
     ButtonGroup returnedDocumentsOptions = new ButtonGroup();
@@ -87,18 +87,18 @@ public class docsNavigator extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String folder = getFolder(true);
-                    
-                //     //new code : for calculating time
-                  long startTime = System.currentTimeMillis();
-                   pi = new PositionalIndex(folder);
-                     // get the end time
+
+                    //     //new code : for calculating time
+                    long startTime = System.currentTimeMillis();
+                    pi = new InvertedIndex(folder);
+                    // get the end time
                     long endTime = System.currentTimeMillis();
-                    
-                    long totalTime = (((endTime - startTime)/1000)/60);
-                    System.out.println("Time to build Inverted Index in seconds: " + ((endTime - startTime)/1000) + " seconds");
+
+                    long totalTime = (((endTime - startTime) / 1000) / 60);
+                    System.out.println("Time to build Inverted Index in seconds: " + ((endTime - startTime) / 1000) + " seconds");
                     System.out.println("Time to build Inverted Index in minutes: " + totalTime + " minutes ");
                     System.out.println("\n\n");
-                    
+
                     String folderBoxText = "Your selected directory is: " + folder;
                     location.setText(folderBoxText);
                     JOptionPane.showMessageDialog(null, "Inverted Index successfully created");
@@ -134,10 +134,10 @@ public class docsNavigator extends JFrame {
                 long searchEndTime = System.nanoTime();
 
 //                // some time passes
-                System.out.println("Search start time: " + searchStartTime);
-                System.out.println("Search end time  : " + searchEndTime);
-                long searchTotalTime = (((searchEndTime - searchStartTime)/1000)/60);
-                System.out.println("Time to search documents in seconds: " + ((searchEndTime - searchStartTime)/1000) + " seconds");
+                System.out.println("Search start time(nano second) : " + searchStartTime);
+                System.out.println("Search end time(nano second)   : " + searchEndTime);
+                long searchTotalTime = (((searchEndTime - searchStartTime) / 1000000000) / 60);
+                System.out.println("Time to search documents in seconds: " + ((searchEndTime - searchStartTime) / 1000000000) + " seconds");
                 System.out.println("Time to search documents in minutes: " + searchTotalTime + " minutes ");
                 System.out.println("\n\n");
 
@@ -175,7 +175,7 @@ public class docsNavigator extends JFrame {
         view.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ButtonModel buttonModel = returnedDocumentsOptions.getSelection();
-                boolean status ;
+                boolean status;
                 if (buttonModel == null) status = false;
                 else status = true;
 
@@ -227,8 +227,10 @@ public class docsNavigator extends JFrame {
         setResizable(false);
     }// end of constructor
 
+
     /**
      * Access to the current directory path to retrieve files
+     *
      * @param showDialogValid valid value that determines to show diaglog
      * @return path string
      */
