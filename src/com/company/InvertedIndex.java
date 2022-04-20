@@ -16,7 +16,7 @@ public class InvertedIndex {
     HashSet<String> stopwordsList;
 
     //for inverted Index
-    private HashMap<String, HashSet<Doc>> termList;
+    private HashMap<String, LinkedHashSet<Doc>> termList;
 
     /**
      * Construct a positional index
@@ -31,8 +31,7 @@ public class InvertedIndex {
         //List of all files and directories
         filesList = directoryPath.listFiles();
 
-
-        File stopwordsPath = new File("./././stopwords");
+        File stopwordsPath = new File("stopwords");
 
         // Stop List Process
         File stopFilesList[] = stopwordsPath.listFiles();
@@ -61,8 +60,8 @@ public class InvertedIndex {
 
 
             // ********* Removing stop words *********
-//            for (int j = 0; j < tokenList.size(); j++)
-//                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
+            for (int j = 0; j < tokenList.size(); j++)
+                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
             // ********* Removing stop words *********
 
 
@@ -87,12 +86,13 @@ public class InvertedIndex {
             for (int tokenIndex = 0; tokenIndex < tokensAfterStemmed.size(); tokenIndex++) {
                 String word = tokensAfterStemmed.get(tokenIndex);
                 if (!termList.containsKey(word)) {
-                    HashSet<Doc> docSet = new HashSet<>();
+                    LinkedHashSet<Doc> docSet = new LinkedHashSet<>();
                     Doc doc = new Doc(docId);
                     docSet.add(doc);
                     termList.put(word, docSet);
                 } else {
-                    HashSet<Doc> set = termList.get(word);
+                    LinkedHashSet<Doc> set = termList.get(word);
+
                     Doc docTemp = new Doc(docId);
                     set.add(docTemp);
                     termList.put(word, set); // Adding a doc from the list
