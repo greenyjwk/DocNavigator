@@ -65,7 +65,9 @@ public class InvertedIndex {
             ArrayList<String> updatedTokenList = new ArrayList<>();
             for (int j = 0; j < tokenList.size(); j++){
                 String token = tokenList.get(j).toLowerCase();
-                if (!stopwordsList.contains(token)) updatedTokenList.add(token);
+                if (!stopwordsList.contains(token)){
+                    updatedTokenList.add(token);
+                }
             }
             // ********* Removing stop words *********
 
@@ -75,11 +77,21 @@ public class InvertedIndex {
             for (int j = 0; j < updatedTokenList.size(); j++) lowercaseList.add(updatedTokenList.get(j).toLowerCase());
             // ********* converting lower case *********
 
-
             // ********* Porter's Stemmer *********
             ArrayList<String> tokensAfterStemmed = PortersStemmer(lowercaseList);
             // ********* Porter's Stemmer *********
 
+            // ********* Removing stop words *********
+            ArrayList<String> updatedTokenList2 = new ArrayList<>();
+            for (int j = 0; j < tokensAfterStemmed.size(); j++){
+                String token = tokensAfterStemmed.get(j).toLowerCase();
+                if (!stopwordsList.contains(token)){
+                    updatedTokenList2.add(token);
+                }
+            }
+
+            // ********* Removing stop words *********
+            tokensAfterStemmed = updatedTokenList2;
 
             // Removing nulls
             while (tokensAfterStemmed.remove(null)) {}
