@@ -44,7 +44,6 @@ public class InvertedIndex {
 
         for (int i = 0; i < filesList.length; i++) {
             int docId = i;
-//            System.out.println(filesList[i].getName());
             // ********* Read single file *********
             String singleDoc = new String();
             try (BufferedReader br = new BufferedReader(new FileReader(filesList[i]))) {

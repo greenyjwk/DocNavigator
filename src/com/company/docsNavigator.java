@@ -36,7 +36,13 @@ public class docsNavigator extends JFrame {
     JFileChooser fileChooser;
     // selected folder
     File selectedFolder;
-
+    // JLabels
+    JLabel info = new JLabel("Welcome to DocsNavigator. With this program you can search through files on your computer based on file contents");
+    JLabel info2 = new JLabel("1. Please click the Browse button to select the folder where you want to search");
+    JLabel info3 = new JLabel("2. Please write your query in the field below then click the Search button to show the results");
+    JLabel info4 = new JLabel("Queries can have from any number of words. The program will return all documents that have those words");
+    JLabel info5 = new JLabel("After results are returned, click the small circle in front of any document and click View Document to view it");
+    
     private boolean validate = false;
     private boolean revalidate = true;
     private boolean repaint = true;
@@ -48,10 +54,10 @@ public class docsNavigator extends JFrame {
     public docsNavigator() {
 
         // GUI settings
-        setSize(750, 200);
+        setSize(800, 370);
         setLocation(350, 275);
         setTitle("DocsNavigator");
-        setMinimumSize(new Dimension(750, 200));
+        setMinimumSize(new Dimension(800, 370));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // Window adapter for existing the GUI
@@ -84,17 +90,11 @@ public class docsNavigator extends JFrame {
         // - generates the positional index
         // - notify the user whether the positional indexes are successfully generated
         browse = new JButton("Browse");
+        browse.setToolTipText("Navigate to the folder where your files are. Make sure to actually navigate to the exact folder");
         browse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String folder = getFolder(true);
-
-                    //     //new code : for calculating time
-//                    long startTime = System.currentTimeMillis();
-//                    pi = new InvertedIndex(folder);
-//                    // get the end time
-//                    long endTime = System.currentTimeMillis();
-
 
                     long startTime = System.currentTimeMillis();
                     pi = new InvertedIndex(folder);
@@ -109,10 +109,6 @@ public class docsNavigator extends JFrame {
                             + (Math.round(totalTime * 100.0) / 100.0) + " minutes \n");
 
 
-
-//                    long totalTime = (((endTime - startTime) / 1000) / 60);
-//                    System.out.println("Time to build Inverted Index in seconds: " + ((endTime - startTime) / 1000) + " seconds");
-//                    System.out.println("Time to build Inverted Index in minutes: " + totalTime + " minutes ");
                     System.out.println("\n\n");
 
                     String folderBoxText = "Your selected directory is: " + folder;
@@ -128,6 +124,7 @@ public class docsNavigator extends JFrame {
         // Search Button
         // - let users use the phrase query terms to find the relevant documents
         search = new JButton("Search");
+        search.setToolTipText("Write your query to the field on the left and click this button to show search");
         search.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 retrievedDocumentsPanel.removeAll();
@@ -148,15 +145,6 @@ public class docsNavigator extends JFrame {
                 long searchStartTime = System.nanoTime();
                 searchResults = pi.Search(searchTerm);
                 long searchEndTime = System.nanoTime();
-
-//                System.out.println("Search start time(nano second) : " + searchStartTime);
-//                System.out.println("Search end time(nano second)   : " + searchEndTime);
-//                long searchTotalTime = (((searchEndTime - searchStartTime) / 1000000000) / 60);
-//                System.out.println("Time to search documents in seconds: " + ((searchEndTime - searchStartTime) / 1000000000) + " seconds");
-//                System.out.println("Time to search documents in minutes: " + searchTotalTime + " minutes ");
-//                System.out.println("\n\n");
-                //search time measurement
-
 
                 int counter = 0;
                 for (Doc doc : searchResults) {
@@ -189,6 +177,7 @@ public class docsNavigator extends JFrame {
         // View Button
         // - let users view the returned documents
         view = new JButton("View Document");
+        view.setToolTipText("After selecting any document in the document pane below, click this button to view the returned documents");
         view.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ButtonModel buttonModel = returnedDocumentsOptions.getSelection();
@@ -220,6 +209,7 @@ public class docsNavigator extends JFrame {
         // Clear Button
         // - clear all the fields except directory field
         clear = new JButton("Clear");
+        clear.setToolTipText("Click this button to clear all fields except the folder location");
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 returnedDocumentsOptions.clearSelection();
@@ -232,8 +222,13 @@ public class docsNavigator extends JFrame {
 
         searchPanel = new JPanel();
         searchPanel.setLayout(new FlowLayout());
+        searchPanel.add(info);
+        searchPanel.add(info2);
         searchPanel.add(location);
         searchPanel.add(browse);
+        searchPanel.add(info3);
+        searchPanel.add(info4);
+        searchPanel.add(info5);
         searchPanel.add(searchBox);
         searchPanel.add(search);
         searchPanel.add(view);
