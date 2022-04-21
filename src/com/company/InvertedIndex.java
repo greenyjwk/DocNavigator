@@ -55,20 +55,24 @@ public class InvertedIndex {
             }
             // ********* Read single file *********
 
+
             // ********* Tokenizing *********
             ArrayList<String> tokenList = tokenizer(singleDoc);
             // ********* Tokenizing *********
 
 
             // ********* Removing stop words *********
-//            for (int j = 0; j < tokenList.size(); j++)
-//                if (this.stopwordsList.contains(tokenList.get(j))) tokenList.remove(j);
+            ArrayList<String> updatedTokenList = new ArrayList<>();
+            for (int j = 0; j < tokenList.size(); j++){
+                String token = tokenList.get(j).toLowerCase();
+                if (!stopwordsList.contains(token)) updatedTokenList.add(token);
+            }
             // ********* Removing stop words *********
 
 
             // ********* converting lower case *********
             ArrayList<String> lowercaseList = new ArrayList<>();
-            for (int j = 0; j < tokenList.size(); j++) lowercaseList.add(tokenList.get(j).toLowerCase());
+            for (int j = 0; j < updatedTokenList.size(); j++) lowercaseList.add(updatedTokenList.get(j).toLowerCase());
             // ********* converting lower case *********
 
 
@@ -78,8 +82,7 @@ public class InvertedIndex {
 
 
             // Removing nulls
-            while (tokensAfterStemmed.remove(null)) {
-            }
+            while (tokensAfterStemmed.remove(null)) {}
             // Removing nulls
 
 

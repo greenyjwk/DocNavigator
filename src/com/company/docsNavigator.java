@@ -144,22 +144,19 @@ public class docsNavigator extends JFrame {
                 // retrieving the documents
                 String[] searchTerm = searchBox.getText().split(" ");
 
-
+                //search time measurement
                 long searchStartTime = System.nanoTime();
                 searchResults = pi.Search(searchTerm);
                 long searchEndTime = System.nanoTime();
 
+//                System.out.println("Search start time(nano second) : " + searchStartTime);
+//                System.out.println("Search end time(nano second)   : " + searchEndTime);
+//                long searchTotalTime = (((searchEndTime - searchStartTime) / 1000000000) / 60);
+//                System.out.println("Time to search documents in seconds: " + ((searchEndTime - searchStartTime) / 1000000000) + " seconds");
+//                System.out.println("Time to search documents in minutes: " + searchTotalTime + " minutes ");
+//                System.out.println("\n\n");
+                //search time measurement
 
-
-
-
-//                // some time passes
-                System.out.println("Search start time(nano second) : " + searchStartTime);
-                System.out.println("Search end time(nano second)   : " + searchEndTime);
-                long searchTotalTime = (((searchEndTime - searchStartTime) / 1000000000) / 60);
-                System.out.println("Time to search documents in seconds: " + ((searchEndTime - searchStartTime) / 1000000000) + " seconds");
-                System.out.println("Time to search documents in minutes: " + searchTotalTime + " minutes ");
-                System.out.println("\n\n");
 
                 int counter = 0;
                 for (Doc doc : searchResults) {
